@@ -27,6 +27,9 @@ class ExchangeRateConverter
     end
   end
 
+  # five decimals precision, round to 3 for the result
+  DECIMAL_PRECISION=100000
+
   attr_reader :amount_param, :date_param
 
   def convert(amount_param, date_param)
@@ -34,7 +37,7 @@ class ExchangeRateConverter
     @amount_param = amount_param
     @date_param = date_param
 
-    Float(amount * exchange_rate / 100)
+    (Float(amount * exchange_rate) / DECIMAL_PRECISION).round(3)
   end
 
   private
@@ -44,7 +47,7 @@ class ExchangeRateConverter
   end
 
   def amount
-    (Float(amount_param) * 100).to_i
+    (Float(amount_param) * DECIMAL_PRECISION).to_i
   end
 
   def date
