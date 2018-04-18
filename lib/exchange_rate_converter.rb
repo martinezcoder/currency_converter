@@ -29,14 +29,18 @@ class ExchangeRateConverter
 
   attr_reader :date
 
-  def convert(amount, date)
-    @date = Date.parse(date).strftime("%Y%m%d").to_i
+  def convert(amount, date_param)
+    @date = Date.parse(date_param).strftime("%Y%m%d").to_i
     run_validations
 
-    "hello"
+    amount * exchange_rate
   end
 
   private
+
+  def exchange_rate
+    DailyExchangeRate.find_conversion(date).value
+  end
 
   def run_validations
     if date < 20000101

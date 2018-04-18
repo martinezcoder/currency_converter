@@ -12,25 +12,35 @@ describe ExchangeRateConverter do
   end
 
   context "database is present" do
-    before { create_list(:daily_exchange_rate, 3) }
+    describe "#validations" do
+      before { create_list(:daily_exchange_rate, 3) }
 
-    it "does not raise database emtpty error" do
-      expect{ subject.convert(1, '2016-01-09') }
-        .not_to raise_error
-    end
+      it "does not raise database emtpty error" do
+        existent_date = DailyExchangeRate.last.date.to_s
+        expect{ subject.convert(1, existent_date) }
+          .not_to raise_error
+      end
 
-    context "given date is before year 2000" do
-      it "raises an error" do
-        expect { subject.convert(1, '1999-12-31') }
-          .to raise_error(ExchangeRateConverter::TooOldDateError)
+      context "given date is before year 2000" do
+        it "raises an error" do
+          expect { subject.convert(1, '1999-12-31') }
+            .to raise_error(ExchangeRateConverter::TooOldDateError)
+        end
       end
     end
 
-    context "date is not present in DB" do
-      it "returns the previous date"
+    context "date is missing in DB" do
+      before do
+        create(:daily_exchange_rate, date: 20001205, value: 1)
+        create(:daily_exchange_rate, date: 20001206, value: 2)
+        create(:daily_exchange_rate, date: 20001209, value: 1)
+        create(:daily_exchange_rate, date: 20001210, value: 1)
+      end
 
-      context "previous date does not exist" do
-        it "raises an error"
+      let(:missing_date) { '20001208' }
+
+      it "uses the previous date" do
+        expect(subject.convert(1, missing_date)).to eq 2
       end
     end
   end

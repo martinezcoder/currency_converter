@@ -15,6 +15,7 @@ ActiveRecord::Schema.define(version: 1) do
   create_table "daily_exchange_rates", force: :cascade do |t|
     t.integer "date"
     t.integer "value"
+    t.index ["date"], name: "index_daily_exchange_rates_on_date", unique: true
   end
 
 end
