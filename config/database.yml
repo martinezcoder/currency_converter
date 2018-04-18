@@ -3,9 +3,11 @@ default: &default
   database: db/data.sqlite3
   pool: 5
   timeout: 5000
+  seeds_path: "http://sdw.ecb.europa.eu/quickviewexport.do?SERIES_KEY=120.EXR.D.USD.EUR.SP00.A&type=csv"
 
 development:
   <<: *default
 
 test:
   <<: *default
+  seeds_path: "fixtures/data.csv"

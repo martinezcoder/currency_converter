@@ -12,6 +12,7 @@ Dir["#{lib_dir}/exchange_rate_converter/**/*.rb"].each { |f| require f}
 class ExchangeRateConverter
   DatabaseEmptyError = Class.new(StandardError)
   TooOldDateError = Class.new(StandardError)
+  InvalidDateError = Class.new(StandardError)
 
   class << self
     def env
@@ -24,6 +25,10 @@ class ExchangeRateConverter
 
     def start
       ActiveRecord::Base.establish_connection(config.db_current)
+    end
+
+    def file_url
+      config.db_current["seeds_path"]
     end
   end
 
@@ -51,6 +56,9 @@ class ExchangeRateConverter
   end
 
   def date
+    unless date_param.match(/\d{4}-\d{2}-\d{2}/)
+      raise InvalidDateError, "Date must have the format 'YYYY-MM-DD'"
+    end
     date = Date.parse(date_param).strftime("%Y%m%d").to_i
     if date < 20000101
       raise TooOldDateError, "Date must be after the year 2000"
