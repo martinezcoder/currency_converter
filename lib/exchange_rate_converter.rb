@@ -11,6 +11,7 @@ Dir["#{lib_dir}/exchange_rate_converter/**/*.rb"].each { |f| require f}
 
 class ExchangeRateConverter
   DatabaseEmptyError = Class.new(StandardError)
+  TooOldDateError = Class.new(StandardError)
 
   class << self
     def env
@@ -26,14 +27,27 @@ class ExchangeRateConverter
     end
   end
 
+  attr_reader :date
+
   def convert(amount, date)
-    unless DailyExchangeRate.any?
-      raise DatabaseEmptyError, "DailyExchangeRates is empty. Please, update the data before running again."
-    end
-    hello
+    @date = Date.parse(date).strftime("%Y%m%d").to_i
+    run_validations
+
+    "hello"
   end
 
-  def hello
-    puts "hola"
+  private
+
+  def run_validations
+    if date < 20000101
+      raise TooOldDateError, "Date must be after the year 2000"
+    end
+    unless database_present?
+      raise DatabaseEmptyError, "DailyExchangeRates is empty. Please, update the data before running again."
+    end
+  end
+
+  def database_present?
+    DailyExchangeRate.any?
   end
 end
