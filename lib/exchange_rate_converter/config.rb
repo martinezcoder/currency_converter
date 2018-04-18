@@ -1,7 +1,7 @@
 require 'singleton'
 require 'erb'
 
-module ExchangeRateConverter
+class ExchangeRateConverter
   class Config
     include Singleton
 

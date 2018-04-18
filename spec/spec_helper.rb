@@ -26,3 +26,4 @@ RSpec.configure do |config|
     end
   end
 end
+FactoryBot.find_definitions

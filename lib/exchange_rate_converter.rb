@@ -9,22 +9,31 @@ include ActiveRecord::Tasks
 lib_dir = File.expand_path("#{__dir__}/../lib/")
 Dir["#{lib_dir}/exchange_rate_converter/**/*.rb"].each { |f| require f}
 
-module ExchangeRateConverter
+class ExchangeRateConverter
   DatabaseEmptyError = Class.new(StandardError)
 
-  def self.env
-    ENV["APP_ENV"] ? ENV["APP_ENV"] : "development"
-  end
+  class << self
+    def env
+      ENV["APP_ENV"] ? ENV["APP_ENV"] : "development"
+    end
 
-  def self.config
-    Config.instance
-  end
+    def config
+      Config.instance
+    end
 
-  def self.start
-    ActiveRecord::Base.establish_connection(config.db_current)
+    def start
+      ActiveRecord::Base.establish_connection(config.db_current)
+    end
   end
 
   def convert(amount, date)
-    raise DatabaseEmptyError, database_emtpy_msg if DailyExchangesRate.empty?
+    unless DailyExchangeRate.any?
+      raise DatabaseEmptyError, "DailyExchangeRates is empty. Please, update the data before running again."
+    end
+    hello
+  end
+
+  def hello
+    puts "hola"
   end
 end
