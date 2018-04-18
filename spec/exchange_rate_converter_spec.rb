@@ -29,7 +29,7 @@ describe ExchangeRateConverter do
       end
     end
 
-    context "date is missing in DB" do
+    context "some dates ar missing in DB" do
       before do
         create(:daily_exchange_rate, date: 20001205, value: 1)
         create(:daily_exchange_rate, date: 20001206, value: 2)
@@ -37,10 +37,20 @@ describe ExchangeRateConverter do
         create(:daily_exchange_rate, date: 20001210, value: 1)
       end
 
-      let(:missing_date) { '20001208' }
+      context "given the missing date" do
+        let(:missing_date) { '20001208' }
 
-      it "uses the previous date" do
-        expect(subject.convert(1, missing_date)).to eq 2
+        it "uses the previous date" do
+          expect(subject.convert(1, missing_date)).to eq 2
+        end
+      end
+
+      context "given an existent date" do
+        let(:existent_date) { '20001206' }
+
+        it "uses that date" do
+          expect(subject.convert(1, existent_date)).to eq 2
+        end
       end
     end
   end

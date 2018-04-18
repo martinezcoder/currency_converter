@@ -27,13 +27,14 @@ class ExchangeRateConverter
     end
   end
 
-  attr_reader :date
+  attr_reader :amount_param, :date_param
 
-  def convert(amount, date_param)
-    @date = Date.parse(date_param).strftime("%Y%m%d").to_i
-    run_validations
+  def convert(amount_param, date_param)
+    validate_database
+    @amount_param = amount_param
+    @date_param = date_param
 
-    amount * exchange_rate
+    Float(amount * exchange_rate / 100)
   end
 
   private
@@ -42,16 +43,21 @@ class ExchangeRateConverter
     DailyExchangeRate.find_conversion(date).value
   end
 
-  def run_validations
+  def amount
+    (Float(amount_param) * 100).to_i
+  end
+
+  def date
+    date = Date.parse(date_param).strftime("%Y%m%d").to_i
     if date < 20000101
       raise TooOldDateError, "Date must be after the year 2000"
     end
-    unless database_present?
-      raise DatabaseEmptyError, "DailyExchangeRates is empty. Please, update the data before running again."
-    end
+    date
   end
 
-  def database_present?
-    DailyExchangeRate.any?
+  def validate_database
+    unless DailyExchangeRate.any?
+      raise DatabaseEmptyError, "DailyExchangeRates is empty. Please, update the data before running again."
+    end
   end
 end
