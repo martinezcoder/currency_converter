@@ -7,10 +7,9 @@ class LoadRates
   def load
     each_line do |num_line, raw_date, raw_value|
       begin
-        # TODO: DRY
-        date = Date.parse(raw_date).strftime("%Y%m%d").to_i
-        # TODO: DRY
-        value = (Float(raw_value) * DECIMAL_PRECISION).to_i
+        # TODO: prevent too old date error!!!!!
+        date = DateHelper.new(raw_date).parse
+        value = AmountHelper.to_integer(raw_value)
         DailyExchangeRate.find_or_create_by!(date: date) do |d|
           d.value = value
         end

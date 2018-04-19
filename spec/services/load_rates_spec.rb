@@ -14,7 +14,6 @@ describe LoadRates do
     end
 
     it "only loads valid lines" do
-      binding.pry
       expect { LoadRates.new.load }
         .to change { DailyExchangeRate.count }.by(3)
     end

@@ -12,7 +12,6 @@ Dir["#{lib_dir}/exchange_rate_converter/**/*.rb"].each { |f| require f}
 class ExchangeRateConverter
   DatabaseEmptyError = Class.new(StandardError)
   TooOldDateError = Class.new(StandardError)
-  InvalidDateError = Class.new(StandardError)
 
   class << self
     def env
@@ -32,9 +31,6 @@ class ExchangeRateConverter
     end
   end
 
-  # five decimals precision, round to 3 for the result
-  DECIMAL_PRECISION=100000
-
   attr_reader :amount_param, :date_param
 
   def convert(amount_param, date_param)
@@ -42,7 +38,7 @@ class ExchangeRateConverter
     @amount_param = amount_param
     @date_param = date_param
 
-    (Float(amount * exchange_rate) / DECIMAL_PRECISION).round(3)
+    AmountHelper.to_float(amount * exchange_rate)
   end
 
   private
@@ -52,14 +48,11 @@ class ExchangeRateConverter
   end
 
   def amount
-    (Float(amount_param) * DECIMAL_PRECISION).to_i
+    AmountHelper.to_integer(amount_param)
   end
 
   def date
-    unless date_param.match(/\d{4}-\d{2}-\d{2}/)
-      raise InvalidDateError, "Date must have the format 'YYYY-MM-DD'"
-    end
-    date = Date.parse(date_param).strftime("%Y%m%d").to_i
+    date = DateHelper.new(date_param).parse
     if date < 20000101
       raise TooOldDateError, "Date must be after the year 2000"
     end

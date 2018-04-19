@@ -21,13 +21,6 @@ describe ExchangeRateConverter do
           .not_to raise_error
       end
 
-      context "date has bad format" do
-        it "raises an error" do
-          expect { subject.convert(1, '20-12-31') }
-            .to raise_error(ExchangeRateConverter::InvalidDateError)
-        end
-      end
-
       context "date is before year 2000" do
         it "raises an error" do
           expect { subject.convert(1, '1999-12-31') }
