@@ -2,42 +2,45 @@ require 'open-uri'
 require 'csv'
 
 class LoadRates
-  DECIMAL_PRECISION=100000
+  attr_reader :file_path
+
+  def initialize(file_path = ExchangeRateConverter.file_url)
+    @file_path = file_path
+  end
 
   def load
     each_line do |num_line, raw_date, raw_value|
       begin
-        # TODO: prevent too old date error!!!!!
         date = DateHelper.new(raw_date).parse
         value = AmountHelper.to_integer(raw_value)
         DailyExchangeRate.find_or_create_by!(date: date) do |d|
           d.value = value
         end
       rescue ArgumentError => e
-        puts "Invalid arguments in line #{num_line}. Date: '#{raw_date}', Value: '#{raw_value}'"
+        puts "\rInvalid arguments in line #{num_line}. Date: '#{raw_date}', Value: '#{raw_value}'. Skipping..."
+        next
+      rescue DateHelper::InvalidDateError
+        puts "\rInvalid date at line #{num_line}. Date: '#{raw_date}'. Skipping..."
         next
       rescue => e
-        puts "Unexpected error in line #{num_line}"
+        puts "\rUnexpected error in line #{num_line}. Skipping..."
         puts e.inspect
+        next
       end
     end
   end
 
   def each_line
-    seed_data_file = ExchangeRateConverter.file_url
-
-    CSV.new(open(seed_data_file), :headers => :first_row).each_with_index do |line, index|
-      if index > 3
-        yield [index, *line.to_h.values]
-        show_progression
+    puts "Loading..."
+    CSV.new(open(file_path)).each_with_index do |line, index|
+      if index > 4
+        yield [index, *line]
+        show_progression(index)
       end
     end
   end
 
-  def show_progression
-    $stdout.flush; print "Loading... \\\r"
-    $stdout.flush; print "Loading... |\r"
-    $stdout.flush; print "Loading... /\r"
-    $stdout.flush; print "Loading... -\r"
+  def show_progression(num_line)
+    $stdout.flush; print "\r#{num_line}"
   end
 end

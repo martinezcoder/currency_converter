@@ -44,7 +44,9 @@ class ExchangeRateConverter
   private
 
   def exchange_rate
-    DailyExchangeRate.find_conversion(date).value
+    AmountHelper.to_float(
+      DailyExchangeRate.find_conversion(date).value
+    )
   end
 
   def amount
@@ -65,3 +67,5 @@ class ExchangeRateConverter
     end
   end
 end
+
+ExchangeRateConverter.start

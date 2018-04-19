@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+
+lib_dir = File.expand_path("#{__dir__}/../lib/")
+$LOAD_PATH.unshift(lib_dir) unless $LOAD_PATH.include?(lib_dir)
+
+require 'exchange_rate_converter'
+
+require "pry"
+Pry.start

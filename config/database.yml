@@ -10,4 +10,4 @@ development:
 
 test:
   <<: *default
-  seeds_path: "fixtures/data.csv"
+  seeds_path: "http://test.com/data.csv"

@@ -31,10 +31,10 @@ describe ExchangeRateConverter do
 
     context "some dates ar missing in DB" do
       before do
-        create(:daily_exchange_rate, date: 20001205, value: 1)
-        create(:daily_exchange_rate, date: 20001206, value: 2)
-        create(:daily_exchange_rate, date: 20001209, value: 1)
-        create(:daily_exchange_rate, date: 20001210, value: 1)
+        create(:daily_exchange_rate, date: 20001205, value: 100000)
+        create(:daily_exchange_rate, date: 20001206, value: 200000)
+        create(:daily_exchange_rate, date: 20001209, value: 100000)
+        create(:daily_exchange_rate, date: 20001210, value: 100000)
       end
 
       context "given the missing date" do
@@ -56,7 +56,7 @@ describe ExchangeRateConverter do
 
     context "amount_param has decimals" do
       before do
-        create(:daily_exchange_rate, date: 20000101, value: 1)
+        create(:daily_exchange_rate, date: 20000101, value: 100000)
       end
 
       it "returns a float value" do
