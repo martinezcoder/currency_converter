@@ -13,6 +13,7 @@ class ExchangeRateConverter
   DatabaseEmptyError = Class.new(StandardError)
   TooOldDateError = Class.new(StandardError)
 
+  ## Config
   class << self
     def env
       ENV["APP_ENV"] ? ENV["APP_ENV"] : "development"
@@ -68,4 +69,5 @@ class ExchangeRateConverter
   end
 end
 
+# Start the database
 ExchangeRateConverter.start
