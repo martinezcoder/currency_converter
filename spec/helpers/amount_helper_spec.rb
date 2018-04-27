@@ -43,8 +43,8 @@ describe AmountHelper do
 
       it { expect(result).to be_a Float }
 
-      it "rounds three decimals" do
-        expect(result).to eq 123.457
+      it "returns all the decimals" do
+        expect(result).to eq 123.45678
       end
     end
   end

@@ -65,9 +65,19 @@ describe ExchangeRateConverter do
 
       context "amount_params has multiple decimals" do
         it "returns a float value" do
-          expect(subject.convert(1.23446, '2000-01-01')).to eq 1.234
-          expect(subject.convert(1.23789, '2000-01-01')).to eq 1.238
+          expect(subject.convert(1.23446, '2000-01-01')).to eq 1.2345
+          expect(subject.convert(1.23789, '2000-01-01')).to eq 1.2379
         end
+      end
+    end
+
+    context "the value of conversion has decimals" do
+      before do
+        create(:daily_exchange_rate, date: 20000101, value: 123789)
+      end
+
+      it "returns the float value rounded to 4 decimals" do
+        expect(subject.convert(1, '2000-01-01')).to eq 1.2379
       end
     end
   end

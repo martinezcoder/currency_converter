@@ -1,5 +1,5 @@
 class AmountHelper
-  # five decimals precision, round to 3 for the result
+  # five decimals precision
   DECIMAL_PRECISION=100000
 
   class << self
@@ -8,7 +8,7 @@ class AmountHelper
     end
 
     def to_float(integer_amount)
-      (Float(integer_amount) / DECIMAL_PRECISION).round(3)
+      (Float(integer_amount) / DECIMAL_PRECISION)
     end
   end
 end
