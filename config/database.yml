@@ -10,4 +10,5 @@ development:
 
 test:
   <<: *default
+  database: db/data.test.sqlite3
   seeds_path: "http://test.com/data.csv"

@@ -34,7 +34,7 @@ $ bin/download
 
 ```
 $ bin/converter 120 '2011-03-05'
-167.52
+85.9784
 ```
 
 ### Examples with errors
