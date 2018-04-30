@@ -39,7 +39,7 @@ class ExchangeRateConverter
     @amount_param = amount_param
     @date_param = date_param
 
-    AmountHelper.to_float(amount * exchange_rate).round(4)
+    AmountHelper.to_float(amount / exchange_rate).round(4)
   end
 
   private

@@ -32,7 +32,7 @@ describe ExchangeRateConverter do
     context "some dates ar missing in DB" do
       before do
         create(:daily_exchange_rate, date: 20001205, value: 100000)
-        create(:daily_exchange_rate, date: 20001206, value: 200000)
+        create(:daily_exchange_rate, date: 20001206, value: 50000)
         create(:daily_exchange_rate, date: 20001209, value: 100000)
         create(:daily_exchange_rate, date: 20001210, value: 100000)
       end
@@ -77,7 +77,7 @@ describe ExchangeRateConverter do
       end
 
       it "returns the float value rounded to 4 decimals" do
-        expect(subject.convert(1, '2000-01-01')).to eq 1.2379
+        expect(subject.convert(1, '2000-01-01')).to eq 0.8078
       end
     end
   end
